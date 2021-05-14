@@ -7,11 +7,11 @@ from .onnx_exporter import (
 )
 
 from transformers import (
-    T5Config,
-    T5ForConditionalGeneration,
+    MT5Config,
+    MT5ForConditionalGeneration,
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
-    T5Tokenizer,
+    MT5Tokenizer,
 )
 from transformers.generation_utils import GenerationMixin
 from transformers.modeling_outputs import (
@@ -24,7 +24,7 @@ import functools
 import operator
 
 
-class T5Encoder(torch.nn.Module):
+class MT5Encoder(torch.nn.Module):
     def __init__(self, encoder_sess):
         super().__init__()
         self.encoder = encoder_sess
@@ -53,7 +53,7 @@ class T5Encoder(torch.nn.Module):
         return BaseModelOutput(encoder_hidden_state)
 
 
-class T5DecoderInit(torch.nn.Module):
+class MT5DecoderInit(torch.nn.Module):
     def __init__(self, decoder_sess):
         super().__init__()
         self.decoder = decoder_sess
@@ -78,7 +78,7 @@ class T5DecoderInit(torch.nn.Module):
         return torch.from_numpy(decoder_outputs[0]), out_past_key_values
 
 
-class T5Decoder(torch.nn.Module):
+class MT5Decoder(torch.nn.Module):
     def __init__(self, decoder_sess):
         super().__init__()
         self.decoder = decoder_sess
@@ -112,20 +112,20 @@ class T5Decoder(torch.nn.Module):
 # config = T5Config.from_pretrained(model_or_model_path)
 
 
-class OnnxT5(T5ForConditionalGeneration):
+class OnnxMT5(MT5ForConditionalGeneration):
     """ creates a T5 model using onnx sessions (encode, decoder & init_decoder) """
 
     def __init__(self, model_or_model_path, onnx_model_sessions):
-        config = T5Config.from_pretrained(model_or_model_path)
+        config = MT5Config.from_pretrained(model_or_model_path)
         super().__init__(config)
 
         assert len(onnx_model_sessions) == 3, "all three models should be given"
 
         encoder_sess, decoder_sess, decoder_sess_init = onnx_model_sessions
 
-        self.encoder = T5Encoder(encoder_sess)
-        self.decoder = T5Decoder(decoder_sess)
-        self.decoder_init = T5DecoderInit(decoder_sess_init)
+        self.encoder = MT5Encoder(encoder_sess)
+        self.decoder = MT5Decoder(decoder_sess)
+        self.decoder_init = MT5DecoderInit(decoder_sess_init)
 
     def forward(
         self,

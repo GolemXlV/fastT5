@@ -1,14 +1,14 @@
 from .onnx_models_structure import (
-    T5Encoder,
+    MT5Encoder,
     DecoderWithLMhead,
     DecoderWithLMheadInitial,
 )
 from transformers import (
-    T5Tokenizer,
+    MT5Tokenizer,
     AutoTokenizer,
     AutoConfig,
     AutoModelForSeq2SeqLM,
-    T5ForConditionalGeneration,
+    MT5ForConditionalGeneration,
 )
 import torch
 import functools
@@ -23,7 +23,7 @@ saved_models_path = _folder.joinpath("models")
 Bar.check_tty = False
 
 
-def create_t5_encoder_decoder(pretrained_version="t5-base"):
+def create_t5_encoder_decoder(pretrained_version="google/mt5-base"):
     """Generates an encoder and a decoder model with a language model head from a pretrained huggingface model
 
     Args:
@@ -34,7 +34,7 @@ def create_t5_encoder_decoder(pretrained_version="t5-base"):
         decoder_with_lm_head: pytorch t5 decoder with a language modeling head
     """
 
-    model = T5ForConditionalGeneration.from_pretrained(pretrained_version)
+    model = MT5ForConditionalGeneration.from_pretrained(pretrained_version)
 
     return turn_model_into_encoder_decoder(model)
 
@@ -45,7 +45,7 @@ def turn_model_into_encoder_decoder(model):
     lm_head = model.lm_head
 
     decoder_with_lm_head = DecoderWithLMhead(decoder, lm_head, model.config)
-    simplified_encoder = T5Encoder(encoder)
+    simplified_encoder = MT5Encoder(encoder)
     decoder_with_lm_head_init = DecoderWithLMheadInitial(decoder, lm_head, model.config)
 
     return simplified_encoder, decoder_with_lm_head, decoder_with_lm_head_init

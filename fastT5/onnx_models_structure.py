@@ -1,10 +1,10 @@
 import torch
 from transformers import (
-    T5Tokenizer,
+    MT5Tokenizer,
     AutoTokenizer,
     AutoConfig,
     AutoModelForSeq2SeqLM,
-    T5ForConditionalGeneration,
+    MT5ForConditionalGeneration,
 )
 
 
@@ -36,7 +36,7 @@ class DecoderWithLMhead(torch.nn.Module):
         return lm_head_out, decoder_output[1]
 
 
-class T5Encoder(torch.nn.Module):
+class MT5Encoder(torch.nn.Module):
     """ Creation of a class to output only the last hidden state from the encoder """
 
     def __init__(self, encoder):
