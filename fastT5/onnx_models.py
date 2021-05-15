@@ -206,7 +206,7 @@ def export_and_get_onnx_model(model_or_model_path, quantized=True):
         model_sessions = get_onnx_runtime_sessions(onnx_model_paths)
 
     # step 4. get the onnx model
-    model = OnnxT5(model_or_model_path, model_sessions)
+    model = OnnxMT5(model_or_model_path, model_sessions)
     print("Done!")
 
     return model
@@ -236,6 +236,6 @@ def get_onnx_model(model_name_or_path, quantized=True):
 
     model_sessions = get_onnx_runtime_sessions(model_paths)
 
-    model = OnnxT5(model_name_or_path, model_sessions)
+    model = OnnxMT5(model_name_or_path, model_sessions)
 
     return model
